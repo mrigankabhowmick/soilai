@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Settings, User, Bell, Shield, Cpu, Globe, Save } from 'lucide-react';
 import { useApp } from '../context/AppContext';

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import {
   Cpu, Battery, Wifi, Navigation, ArrowUp, ArrowDown, ArrowLeft, ArrowRight,
@@ -5,6 +7,7 @@ import {
   Clock, WifiOff, Usb, Radio, CheckCircle, Loader2
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { supabaseUrl } from '../lib/supabase';
 
 function GaugeCircle({ value, max, label, unit, color }: { value: number; max: number; label: string; unit: string; color: string }) {
   const pct = value / max;
@@ -44,8 +47,7 @@ function DroneConnectionPanel() {
   const [connInfo, setConnInfo] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState('');
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   const connect = async () => {
     setStatus('connecting');

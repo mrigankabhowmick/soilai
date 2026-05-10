@@ -1,5 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase, Profile, Drone, AiAlert } from '../lib/supabase';
+'use client';
+
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import { supabase, supabaseUrl, Profile, Drone, AiAlert } from '../lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
 type Theme = 'dark' | 'light';
@@ -39,12 +42,13 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>({
+  const pathname = usePathname();
+  const [user] = useState<User | null>({
     id: 'guest_user_id',
     email: 'farmer@soilguard.ai',
     user_metadata: { full_name: 'Guest Farmer' }
   } as any);
-  const [session, setSession] = useState<Session | null>(null);
+  const [session] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>({
     id: 'guest_user_id',
     full_name: 'Guest Farmer',
@@ -62,22 +66,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [torchBrightness, setTorchBrightness] = useState(80);
   const [activeDrone, setActiveDrone] = useState<Drone | null>(null);
 
+  // Sync current page with URL
   useEffect(() => {
-    // Auth disabled for local/guest access
-    /*
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-    */
-  }, []);
+    const page = pathname?.split('/')[1] as Page;
+    if (page && [
+      'dashboard', 'camera', 'drone-control', 'ai-monitor', 
+      'gallery', 'analytics', 'sustainability', 'settings'
+    ].includes(page)) {
+      setCurrentPage(page);
+    } else if (pathname === '/') {
+      setCurrentPage('dashboard');
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (!user) {
@@ -88,22 +88,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     (async () => {
-      const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-      if (p) setProfile(p);
+      try {
+        if (supabaseUrl.includes('placeholder')) return;
 
-      const { data: d } = await supabase.from('drones').select('*').eq('user_id', user.id);
-      if (d) {
-        setDrones(d as Drone[]);
-        if (d.length > 0) setActiveDrone(d[0] as Drone);
+        const { data: p, error: pError } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+        if (p && !pError) setProfile(p);
+
+        const { data: d, error: dError } = await supabase.from('drones').select('*').eq('user_id', user.id);
+        if (d && !dError) {
+          setDrones(d as Drone[]);
+          if (d.length > 0) setActiveDrone(d[0] as Drone);
+        }
+
+        const { data: a, error: aError } = await supabase
+          .from('ai_alerts')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(50);
+        if (a && !aError) setAlerts(a as AiAlert[]);
+      } catch (err) {
+        console.error('Failed to fetch data from Supabase:', err);
       }
-
-      const { data: a } = await supabase
-        .from('ai_alerts')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(50);
-      if (a) setAlerts(a as AiAlert[]);
     })();
   }, [user]);
 

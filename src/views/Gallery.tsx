@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useRef } from 'react';
 import { Image, Search, Download, Tag, MapPin, Calendar, Camera, Grid, List, X, HardDrive, Upload, Cloud, Loader2, CheckCircle, FolderOpen } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseUrl } from '../lib/supabase';
 
 const MEDIA_DATA = [
   { id: 1, url: 'https://images.pexels.com/photos/1629660/pexels-photo-1629660.jpeg?auto=compress&w=600', thumb: 'https://images.pexels.com/photos/1629660/pexels-photo-1629660.jpeg?auto=compress&w=200', name: 'zone-a-survey-001.jpg', area: 'Zone A', crop: 'Wheat', date: '2024-01-15', size: 4.2, type: 'image', tags: ['wheat', 'healthy', 'NDVI'] },
@@ -28,8 +30,7 @@ function SDCardPanel() {
   const [showPanel, setShowPanel] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   const scanSDCard = async () => {
     setScanning(true);
@@ -180,7 +181,7 @@ function SDCardPanel() {
               />
             </div>
             <p className="text-xs text-gray-600 mt-2">
-              {'showDirectoryPicker' in window
+              {typeof window !== 'undefined' && 'showDirectoryPicker' in window
                 ? 'Your browser supports direct SD card scanning via File System Access API.'
                 : 'Direct SD scan not supported in this browser. Use "Select Files" or scan for instructions.'}
             </p>

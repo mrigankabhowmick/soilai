@@ -1,7 +1,7 @@
 import React from 'react';
+import Link from 'next/link';
 import {
-  Leaf, LayoutDashboard, Camera, Cpu, Brain, Image, BarChart2,
-  Sprout, Settings, LogOut, ChevronLeft, ChevronRight, Bell
+  Leaf, Camera, Cpu, Image, Settings, LogOut, ChevronLeft, ChevronRight, Bell, Radio
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -10,21 +10,19 @@ type NavItem = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: number;
+  href: string;
 };
 
 const navItems: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'camera', label: 'Live Camera', icon: Camera },
-  { id: 'drone-control', label: 'Drone Control', icon: Cpu },
-  { id: 'ai-monitor', label: 'AI Monitor', icon: Brain },
-  { id: 'gallery', label: 'Media Gallery', icon: Image },
-  { id: 'analytics', label: 'Analytics', icon: BarChart2 },
-  { id: 'sustainability', label: 'Sustainability', icon: Sprout },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'camera', label: 'Camera', icon: Camera, href: '/camera' },
+  { id: 'drone-control', label: 'Drone Control', icon: Cpu, href: '/drone-control' },
+  { id: 'connectivity', label: 'Connectivity', icon: Radio, href: '/connectivity' },
+  { id: 'gallery', label: 'Media Gallery', icon: Image, href: '/gallery' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
 ];
 
 export default function Sidebar() {
-  const { currentPage, setCurrentPage, sidebarOpen, setSidebarOpen, profile, unreadAlerts, signOut } = useApp();
+  const { currentPage, sidebarOpen, setSidebarOpen, profile, unreadAlerts, signOut } = useApp();
 
   return (
     <aside
@@ -61,9 +59,9 @@ export default function Sidebar() {
           const isActive = currentPage === item.id;
           const badge = item.id === 'ai-monitor' ? unreadAlerts : 0;
           return (
-            <button
+            <Link
               key={item.id}
-              onClick={() => setCurrentPage(item.id as Parameters<typeof setCurrentPage>[0])}
+              href={item.href}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
                 isActive
                   ? 'bg-green-500/15 text-green-400 border border-green-500/20'
@@ -85,7 +83,7 @@ export default function Sidebar() {
               {badge > 0 && !sidebarOpen && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
               )}
-            </button>
+            </Link>
           );
         })}
       </nav>
