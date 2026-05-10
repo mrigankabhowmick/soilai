@@ -5,7 +5,8 @@ import {
   Camera, Maximize2, Minimize2, Sun, Thermometer, Eye,
   Circle, Square, RotateCcw, ZoomIn, ZoomOut, Flashlight,
   Download, Settings, Wifi, Battery, Layers, Monitor, Smartphone,
-  Loader2, CheckCircle, X, Upload, Brain, Sparkles, Activity, Droplets, Wind, Leaf as LeafIcon
+  Loader2, CheckCircle, X, Upload, Brain, Sparkles, Activity, Droplets, Wind, Leaf as LeafIcon,
+  FileDown, RotateCw, Navigation, BarChart3, PieChart, List, AlertTriangle, LayoutGrid, Droplet, Zap, Bug, Target, TrendingUp
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -232,113 +233,328 @@ function LaptopCameraFeed({ visionMode, tick, onSnapshot }: { visionMode: Vision
 
 function AIAnalysisModal({ image, onDismiss }: { image: string; onDismiss: () => void }) {
   const [analyzing, setAnalyzing] = useState(true);
-  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnalyzing(false);
-      setShowResults(true);
-    }, 3000);
+    const timer = setTimeout(() => setAnalyzing(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
+  if (analyzing) {
+    return (
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div className="bg-gray-950 border border-gray-800 rounded-3xl w-full max-w-2xl overflow-hidden p-12 text-center">
+          <div className="relative mb-8 flex justify-center">
+            <div className="absolute inset-0 bg-green-500/20 blur-3xl animate-pulse rounded-full" />
+            <Brain className="w-16 h-16 text-green-400 animate-bounce relative z-10" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">AI Neural Engine Active</h3>
+          <p className="text-gray-500 mb-8">Processing zonal data and spectral analysis...</p>
+          <div className="w-full bg-gray-900 h-2 rounded-full overflow-hidden mb-2">
+            <div className="bg-green-500 h-full animate-[progress_3s_ease-in-out]" style={{ width: '100%' }} />
+          </div>
+          <div className="flex justify-between text-[10px] text-gray-600 font-mono">
+            <span>ZONAL MAPPING</span>
+            <span>88% CONFIDENCE</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-gray-950 border border-gray-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl">
-        <div className="relative aspect-video bg-gray-900">
-          <img src={image} alt="Analysis Target" className="w-full h-full object-cover" />
-          {analyzing && (
-            <div className="absolute inset-0">
-              <div className="absolute inset-0 bg-green-500/10 animate-pulse" />
-              <div className="absolute top-0 left-0 right-0 h-1 bg-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)] animate-scan-line" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-black/60 backdrop-blur-md rounded-2xl px-6 py-4 flex items-center gap-3 border border-green-500/30">
-                  <Brain className="w-6 h-6 text-green-400 animate-bounce" />
-                  <span className="text-white font-bold tracking-wider">AI ANALYZING AREA...</span>
-                </div>
-              </div>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md overflow-y-auto">
+      <div className="bg-[#f8fafc] w-full max-w-6xl my-8 rounded-[32px] overflow-hidden shadow-2xl animate-fade-in border border-white">
+        {/* Header */}
+        <div className="px-8 py-6 flex items-center justify-between bg-white border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <Brain className="w-6 h-6 text-indigo-600" />
             </div>
-          )}
-          <button onClick={onDismiss} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors">
-            <X className="w-4 h-4" />
-          </button>
+            <div>
+              <h2 className="text-xl font-bold text-slate-800">Analysis Report</h2>
+              <p className="text-xs text-slate-400 font-medium tracking-wide">ID: SG-2026-0510-94</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100">
+              <FileDown className="w-4 h-4" />
+              Download PDF Report
+            </button>
+            <button onClick={() => setAnalyzing(true)} className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all">
+              <RotateCw className="w-4 h-4 text-emerald-500" />
+              Analyze New Image
+            </button>
+            <button onClick={onDismiss} className="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all ml-2">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <div className="p-8">
-          {analyzing ? (
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-800 rounded-full w-3/4 animate-pulse" />
-              <div className="h-4 bg-gray-800 rounded-full w-1/2 animate-pulse" />
-              <div className="h-4 bg-gray-800 rounded-full w-2/3 animate-pulse" />
+        <div className="p-8 space-y-8">
+          {/* Top Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Activity className="w-12 h-12 text-emerald-600" />
+              </div>
+              <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold mb-2">Health Score</div>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-4xl font-black text-slate-800 leading-none">82</span>
+                <span className="text-slate-400 font-bold mb-1">/100</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-[11px] font-bold text-emerald-600">Good - Vegetative</span>
+              </div>
             </div>
-          ) : (
-            <div className="space-y-6 animate-fade-in">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-1">Health Analysis Report</h3>
-                  <p className="text-sm text-gray-500">Scan completed at {new Date().toLocaleTimeString()}</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="text-3xl font-black text-green-400">88%</div>
-                  <div className="text-[10px] text-gray-500 uppercase tracking-widest">Health Score</div>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { label: 'Moisture', val: '64%', icon: Droplets, color: 'text-blue-400' },
-                  { label: 'Nutrients', val: 'Good', icon: Activity, color: 'text-purple-400' },
-                  { label: 'Air Quality', val: '92%', icon: Wind, color: 'text-teal-400' },
-                ].map(m => (
-                  <div key={m.label} className="bg-gray-900/50 rounded-2xl p-3 border border-gray-800">
-                    <m.icon className={`w-4 h-4 ${m.color} mb-2`} />
-                    <div className="text-lg font-bold text-white">{m.val}</div>
-                    <div className="text-[10px] text-gray-500 uppercase">{m.label}</div>
-                  </div>
-                ))}
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Growth & Yield</div>
+                <LeafIcon className="w-4 h-4 text-emerald-500" />
               </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm font-bold text-white">
-                  <Sparkles className="w-4 h-4 text-yellow-400" />
-                  AI Observations & Care
-                </div>
-                <div className="bg-green-500/5 border border-green-500/10 rounded-2xl p-4 space-y-3">
-                  <div className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-3 h-3 text-green-400" />
-                    </div>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      <strong className="text-white">Vegetation Index:</strong> The area shows healthy chlorophyll activity. No immediate fertilizer needed.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                      <Droplets className="w-3 h-3 text-blue-400" />
-                    </div>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      <strong className="text-white">Watering Recommendation:</strong> Surface soil looks slightly dry. Schedule a 15-minute irrigation cycle within the next 4 hours.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-                      <LeafIcon className="w-3 h-3 text-yellow-400" />
-                    </div>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      <strong className="text-white">Pest Alert:</strong> Minimal risk detected. Continue monitoring for aphid activity on the lower leaf surfaces.
-                    </p>
-                  </div>
-                </div>
+              <div className="space-y-1">
+                <div className="text-[11px] font-medium text-slate-500">Prediction: <span className="text-slate-800 font-bold">85% of target</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Height: <span className="text-slate-800 font-bold">45cm - 55cm</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Uniformity: <span className="text-slate-800 font-bold">88%</span></div>
               </div>
-
-              <button
-                onClick={onDismiss}
-                className="w-full py-4 rounded-2xl bg-green-500 text-black font-bold hover:bg-green-400 transition-all shadow-lg shadow-green-500/20"
-              >
-                Close Report
-              </button>
             </div>
-          )}
+
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Environment</div>
+                <Droplet className="w-4 h-4 text-blue-500" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] font-medium text-slate-500">Water Stress: <span className="text-blue-600 font-bold">Mild</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Soil Dryness: <span className="text-orange-500 font-bold">Medium</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Sunlight: <span className="text-yellow-600 font-bold">High</span></div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Telemetry</div>
+                <Navigation className="w-4 h-4 text-indigo-500" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] font-medium text-slate-500">Altitude: <span className="text-slate-800 font-bold">Medium (30m)</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Heading: <span className="text-slate-800 font-bold">North-West</span></div>
+                <div className="text-[11px] font-medium text-slate-500">Quality: <span className="text-emerald-600 font-bold">High</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content (Left) */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Heatmap Card */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-2 mb-6">
+                  <LayoutGrid className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide">Field Health Heatmap</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-3 aspect-[2/1] mb-6">
+                  <div className="bg-emerald-400/80 rounded-2xl flex items-center justify-center text-emerald-900/50 font-black text-4xl">ZONE A</div>
+                  <div className="bg-emerald-400/80 rounded-2xl flex items-center justify-center text-emerald-900/50 font-black text-4xl">ZONE B</div>
+                  <div className="bg-orange-400/80 rounded-2xl flex items-center justify-center text-orange-900/50 font-black text-4xl">ZONE C</div>
+                  <div className="bg-rose-400/80 rounded-2xl flex items-center justify-center text-rose-900/50 font-black text-4xl">ZONE D</div>
+                </div>
+                <div className="flex items-center gap-6">
+                  {[
+                    { color: 'bg-emerald-400', label: 'Healthy' },
+                    { color: 'bg-orange-400', label: 'Stressed' },
+                    { color: 'bg-rose-400', label: 'Critical' },
+                  ].map(l => (
+                    <div key={l.label} className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-sm ${l.color}`} />
+                      <span className="text-[11px] font-bold text-slate-500 uppercase">{l.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Plan */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-2 mb-6">
+                  <TrendingUp className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide">Agronomic Action Plan</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { title: 'Irrigation Strategy', desc: 'Increase water delivery in Zone C by 15% for next 48 hours.', icon: Droplet, color: 'text-blue-500', bg: 'bg-blue-50' },
+                    { title: 'Fertilizer Application', desc: 'Apply localized Nitrogen-rich fertilizer in Zone B.', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50' },
+                    { title: 'Pest & Disease Control', desc: 'No active pests found. Preventive neem oil spray recommended.', icon: Bug, color: 'text-rose-500', bg: 'bg-rose-50' },
+                    { title: 'Weed Management', desc: 'Manual weeding recommended for Zone D patches.', icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50' },
+                  ].map(action => (
+                    <div key={action.title} className="p-5 rounded-2xl border border-slate-50 bg-[#fafbfc]">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`w-8 h-8 ${action.bg} rounded-lg flex items-center justify-center`}>
+                          <action.icon className={`w-4 h-4 ${action.color}`} />
+                        </div>
+                        <h4 className="text-[11px] font-black text-slate-800 uppercase tracking-tight">{action.title}</h4>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed font-medium">{action.desc}</p>
+                    </div>
+                  ))}
+                  <div className="md:col-span-2 p-5 rounded-2xl border border-slate-50 bg-[#fafbfc] flex items-center gap-4">
+                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Target className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-black text-slate-800 uppercase tracking-tight">Next Scan Suggestion</h4>
+                      <p className="text-xs text-slate-500 leading-relaxed font-medium">Re-scan in 3 days after irrigation cycle to monitor recovery in Zone C.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Zonal Analysis Table */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-2 mb-6">
+                  <List className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide">Zonal Analysis</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-100">
+                        {['Zone', 'Status', 'Health', 'Dominant Issue', 'Notes'].map(h => (
+                          <th key={h} className="text-left py-4 text-[10px] font-black text-slate-400 uppercase tracking-wider">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-50">
+                      {[
+                        { z: 'A', s: 'Healthy', h: '95', i: 'None', n: 'Optimal growth zone' },
+                        { z: 'B', s: 'Stressed', h: '78', i: 'Nitrogen Def.', n: 'Requires fertilizer' },
+                        { z: 'C', s: 'Stressed', h: '62', i: 'Water Stress', n: 'Increase irrigation' },
+                        { z: 'D', s: 'Critical', h: '45', i: 'Fungal/Pests', n: 'Immediate attention' },
+                      ].map(row => (
+                        <tr key={row.z} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-4 text-xs font-black text-slate-800">{row.z}</td>
+                          <td className="py-4">
+                            <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${
+                              row.s === 'Healthy' ? 'bg-emerald-50 text-emerald-600' : 
+                              row.s === 'Stressed' ? 'bg-orange-50 text-orange-600' : 'bg-rose-50 text-rose-600'
+                            }`}>{row.s}</span>
+                          </td>
+                          <td className="py-4 text-xs font-bold text-slate-600">{row.h}%</td>
+                          <td className="py-4 text-xs font-medium text-slate-500">{row.i}</td>
+                          <td className="py-4 text-xs font-medium text-slate-400 italic">{row.n}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar (Right) */}
+            <div className="space-y-8">
+              {/* Donut Chart */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-6">Area Coverage</h3>
+                <div className="flex justify-center mb-8 relative">
+                   {/* Simplified SVG Donut Chart */}
+                   <svg viewBox="0 0 36 36" className="w-48 h-48">
+                    <path className="text-amber-900" strokeDasharray="100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="text-orange-500" strokeDasharray="85 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="text-emerald-500" strokeDasharray="65 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="text-amber-500" strokeDasharray="25 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                   </svg>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { color: 'bg-amber-900', label: 'Bare Soil' },
+                    { color: 'bg-orange-500', label: 'Dry' },
+                    { color: 'bg-emerald-500', label: 'Healthy' },
+                    { color: 'bg-amber-500', label: 'Stressed' },
+                    { color: 'bg-indigo-500', label: 'Weeds' },
+                  ].map(l => (
+                    <div key={l.label} className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${l.color}`} />
+                      <span className="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">{l.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Detections */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-6">Detections</h3>
+                <div className="space-y-4 mb-6">
+                  {[
+                    { label: 'Weeds Detected', val: '5% coverage', color: 'text-orange-600', bg: 'bg-orange-50', icon: AlertTriangle },
+                    { label: 'Disease Detected', val: 'None', color: 'text-slate-400', bg: 'bg-slate-50', icon: CheckCircle },
+                    { label: 'Pests Detected', val: 'None', color: 'text-slate-400', bg: 'bg-slate-50', icon: CheckCircle },
+                  ].map(d => (
+                    <div key={d.label} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <d.icon className={`w-3 h-3 ${d.color}`} />
+                        <span className="text-xs font-bold text-slate-800">{d.label}</span>
+                      </div>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded ${d.bg} ${d.color} uppercase`}>{d.val}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="pt-4 border-t border-slate-100">
+                  <div className="text-[10px] font-black text-slate-400 uppercase mb-3">Anomalies</div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-rose-500">
+                      <AlertTriangle className="w-3 h-3" />
+                      <span className="text-[10px] font-bold uppercase">Minor nitrogen deficiency in Zone B</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-rose-500">
+                      <AlertTriangle className="w-3 h-3" />
+                      <span className="text-[10px] font-bold uppercase">Localized dry patch in Zone C</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Object Counts */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-6">Object Counts</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Plants', val: 'Approx. 1280' },
+                    { label: 'Weeds', val: 'Approx. 50' },
+                    { label: 'Bare Patches', val: '4' },
+                    { label: 'Waterlogged', val: '0' },
+                  ].map(o => (
+                    <div key={o.label} className="flex items-center justify-between pb-2 border-b border-slate-50">
+                      <span className="text-xs font-medium text-slate-500">{o.label}</span>
+                      <span className="text-xs font-black text-slate-800 font-mono tracking-tighter">{o.val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* AI Confidence */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wide mb-6">AI Confidence</h3>
+                <div className="space-y-5">
+                  {[
+                    { label: 'Crop Health', val: 92 },
+                    { label: 'Weed Detection', val: 88 },
+                    { label: 'Zonal Mapping', val: 96 },
+                    { label: 'Species ID', val: 74 },
+                  ].map(c => (
+                    <div key={c.label}>
+                      <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase mb-2">
+                        <span>{c.label}</span>
+                        <span>{c.val}%</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${c.val}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
