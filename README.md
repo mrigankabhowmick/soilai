@@ -21,7 +21,7 @@ To run the platform locally, follow these steps:
 
 4. **Access the Platform:**
    Once the server is running, you can access it at:
-   👉 **[http://localhost:5173/](http://localhost:5173/)**
+   👉 **[http://localhost:3000/](http://localhost:3000/)**
 
 ## 🛠 Features
 - **Real-time Telemetry:** Monitor battery, signal, and altitude.
